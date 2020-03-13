@@ -32,14 +32,14 @@ def generate_sphere( points, cx, cy, cz, r, step ):
     rot = 0
     circ = 0
     pi2 = 2 * math.pi
-    while (t < 1):
+    while (rot < 1):
         while (circ < 1):
             x = r * math.cos(math.pi * circ) + cx
             y = r * math.sin(math.pi * circ) * math.cos(pi2 * rot) + cy
             z = r * math.sin(math.pi * circ) * math.sin(pi2 * rot) + cz
             add_point(matrix, x, y, z)
             circ += step
-        t += step
+        rot += step
     return matrix
 
   # ====================
@@ -51,7 +51,7 @@ def generate_sphere( points, cx, cy, cz, r, step ):
 def add_sphere( points, cx, cy, cz, r, step ):
     matrix = generate_sphere(points, cx, cy, cz, r, step)
     for point in matrix:
-        add_edge(points, point[0], point[1], point[2], points, point[0], point[1], point[2])
+        add_edge(points, point[0], point[1], point[2], point[0], point[1], point[2])
 
 
   # ====================
