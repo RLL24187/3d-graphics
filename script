@@ -1,5 +1,5 @@
 #test box mesh
-box
+/box
 0 0 0 200 100 400
 ident
 rotate
@@ -9,12 +9,12 @@ y 20
 move
 150 200 0
 apply
-display
+/display
 #clear the edge matrix, test the sphere
 clear
 sphere
 0 0 0 200
-display
+/display
 #rotate 90 degrees about y to check lines
 ident
 rotate
@@ -22,7 +22,7 @@ y 90
 move
 250 250 0
 apply
-display
+/display
 #reset sphere, rotate 90 degrees about x to check lines
 ident
 move
@@ -34,7 +34,7 @@ x 90
 move
 250 250 0
 apply
-display
+/display
 #reset sphere, rotate to make it look cool
 ident
 move
