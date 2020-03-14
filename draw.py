@@ -95,37 +95,37 @@ def add_torus( points, cx, cy, cz, r0, r1, step ):
 
 
 def add_circle( points, cx, cy, cz, r, step ):
-    x0 = r + cx
-    y0 = cy
-
-    i = 1
-    while i <= step:
-        t = float(i)/step
-        x1 = r * math.cos(2*math.pi * t) + cx;
-        y1 = r * math.sin(2*math.pi * t) + cy;
-
+    full_rot = 2 * math.pi
+    t = 0
+    x0 = r * math.cos(0) + cx
+    y0 = r * math.sin(0) + cy
+    while (t < 1):
+        t += step
+        theta = full_rot * t
+        x1 = r * math.cos(theta) + cx
+        y1 = r * math.sin(theta) + cy
         add_edge(points, x0, y0, cz, x1, y1, cz)
         x0 = x1
         y0 = y1
-        i+= 1
 
 def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
 
-    xcoefs = generate_curve_coefs(x0, x1, x2, x3, curve_type)[0]
-    ycoefs = generate_curve_coefs(y0, y1, y2, y3, curve_type)[0]
-
-    i = 1
-    while i <= step:
-        t = float(i)/step
-        x = t * (t * (xcoefs[0] * t + xcoefs[1]) + xcoefs[2]) + xcoefs[3]
-        y = t * (t * (ycoefs[0] * t + ycoefs[1]) + ycoefs[2]) + ycoefs[3]
-        #x = xcoefs[0] * t*t*t + xcoefs[1] * t*t + xcoefs[2] * t + xcoefs[3]
-        #y = ycoefs[0] * t*t*t + ycoefs[1] * t*t + ycoefs[2] * t + ycoefs[3]
-
-        add_edge(points, x0, y0, 0, x, y, 0)
-        x0 = x
-        y0 = y
-        i+= 1
+    x_coefs = generate_curve_coefs(x0, x1, x2, x3, curve_type)
+    y_coefs = generate_curve_coefs(y0, y1, y2, y3, curve_type)
+    # print_matrix(x_coefs)
+    # print_matrix(y_coefs)
+    first_x = x0
+    first_y = y0
+    t = 0
+    while (t < 1):
+        t += step
+        t2 = t * t
+        t3 = t2 * t
+        second_x = x_coefs[0][0] * t3 + x_coefs[0][1] * t2 + x_coefs[0][2] * t + x_coefs[0][3]
+        second_y = y_coefs[0][0] * t3 + y_coefs[0][1] * t2 + y_coefs[0][2] * t + y_coefs[0][3]
+        add_edge(points, first_x, first_y, 0, second_x ,second_y, 0)
+        first_x = second_x
+        first_y = second_y
 
 
 def draw_lines( matrix, screen, color ):
