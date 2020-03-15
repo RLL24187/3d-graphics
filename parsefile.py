@@ -14,6 +14,7 @@ The file follows the following format:
                 takes 5 arguemnts (cx, cy, cz, r1, r2)
          box: add a rectangular prism to the edge matrix -
               takes 6 arguemnts (x, y, z, width, height, depth)
+         clear: clears the edge matrix
 	 circle: add a circle to the edge matrix -
 	         takes 4 arguments (cx, cy, cz, r)
 	 hermite: add a hermite curve to the edge matrix -
@@ -43,7 +44,7 @@ The file follows the following format:
          quit: end parsing
 See the file script for an example of the file format
 """
-ARG_COMMANDS = [ 'circle', 'bezier', 'hermite', 'line', 'scale', 'move', 'rotate', 'save', 'sphere', 'torus', 'box' ]
+ARG_COMMANDS = [ 'circle', 'bezier', 'hermite', 'line', 'scale', 'move', 'rotate', 'save', 'sphere', 'torus', 'box' , 'clear']
 
 def parse_file( fname, edges, transform, screen, color ):
 
@@ -69,6 +70,9 @@ def parse_file( fname, edges, transform, screen, color ):
 
         elif line == 'torus':
             add_torus(edges, float(args[0]), float(args[1]), float(args[2]), float(args[3]), float(args[4]), step)
+
+        elif line == 'clear':
+            edges = new_matrix(0, 0)
 
         elif line == 'circle':
             #print 'CIRCLE\t' + str(args)
