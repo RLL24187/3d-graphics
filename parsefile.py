@@ -15,6 +15,8 @@ The file follows the following format:
          box: add a rectangular prism to the edge matrix -
               takes 6 arguemnts (x, y, z, width, height, depth)
          clear: clears the edge matrix
+         change_color: changes the color of the matrix
+         change: draw_line immediately
 	 circle: add a circle to the edge matrix -
 	         takes 4 arguments (cx, cy, cz, r)
 	 hermite: add a hermite curve to the edge matrix -
@@ -44,10 +46,10 @@ The file follows the following format:
          quit: end parsing
 See the file script for an example of the file format
 """
-ARG_COMMANDS = [ 'circle', 'bezier', 'hermite', 'line', 'scale', 'move', 'rotate', 'save', 'sphere', 'torus', 'box' , 'clear']
+ARG_COMMANDS = [ 'circle', 'bezier', 'hermite', 'line', 'scale', 'move', 'rotate', 'save', 'sphere', 'torus', 'box' , 'change_color', 'fill']
 
 def parse_file( fname, edges, transform, screen, color ):
-
+    first = True
     f = open(fname)
     lines = f.readlines()
 
@@ -73,6 +75,9 @@ def parse_file( fname, edges, transform, screen, color ):
 
         elif line == 'clear':
             edges = new_matrix(0, 0)
+
+        elif line == 'change_color':
+            color = [int(args[0]), int(args[1]), int(args[2])]
 
         elif line == 'circle':
             #print 'CIRCLE\t' + str(args)
@@ -124,13 +129,27 @@ def parse_file( fname, edges, transform, screen, color ):
         elif line == 'apply':
             matrix_mult( transform, edges )
 
-        elif line == 'display' or line == 'save':
-            clear_screen(screen)
+        # elif line == 'picarray':
+        #     print(picarray())
+        elif line == 'fill':
+            draw_lines(edges, screen, color)
+            fill(int(args[0]), int(args[1]), [int(args[2]), int(args[3]), int(args[4])], "pic.ppm", screen)
+
+        # elif line == 'printscreen':
+        #     print(screen)
+        # elif line == 'printpic':
+        #     print(picarray("pic.ppm"))
+
+        elif line == 'display' or line == 'save' or line == 'change':
+            if (first != True):
+                clear_screen(screen)
+                print("cleared screen")
+                first = False
             draw_lines(edges, screen, color)
 
             if line == 'display':
                 display(screen)
-            else:
+            elif line == 'save':
                 save_extension(screen, args[0])
 
         c+= 1

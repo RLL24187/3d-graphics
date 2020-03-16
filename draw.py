@@ -1,5 +1,8 @@
 from display import *
 from matrix import *
+import os
+home_dir = os.path.expanduser('~')
+Documents_dir = os.path.join(home_dir, 'Documents\\Graphics\\3d-graphics')
 
   # ====================
   # add the points for a rectagular prism whose
@@ -149,9 +152,157 @@ def add_edge( matrix, x0, y0, z0, x1, y1, z1 ):
 def add_point( matrix, x, y, z=0 ):
     matrix.append( [x, y, z, 1] )
 
+def picarray(file_name):
+    f = open(file_name, "r")
+    lines = f.readlines()
+    # print(lines)
+    array = [[[]]] #3d array of pixels 500 x 500 x 3
+    row = 0 #represents # row in 2d array of pixels 500 x 3
+    color = 0
+    for line in lines:
+        if (row == 1):
+            txt = line.split(" ")
+            length = int(txt[0])
+            width = int(txt[1])
+            # print(length)
+            # print(width)
+        pixel = 0 #represents # pixel in 1d array of colors 1 x 3
+        if (row >= 2): #not P3 and size declaration
+            # print(array)
+            # print(array[row - 2])
+            # print(array[row - 2][pixel])
+            # print("row: "+ str(row) + " pixel: "+ str(pixel))
+            txt = line.split(" ")
+            # print("text: ")
+            # print(txt)
+            for num in txt: #colors come in 3's
+                # print("''"+ str(num) + "''")
+                # print(num != "\n")
+                if (num != "\n"):
+                    # print(array)
+                    array[row- 2][pixel].append(int(num))
+                    color += 1
+                    if color == 3: #pixel completed
+                        pixel += 1
+                        color = 0
+                        if (pixel <= width):
+                            array[row - 2].append([])
+                            # print(array)
+                        # else:
+                        #     print("else")
+                        #     print(array)
+                        #     array[row - 2].pop()
+                        #     print(array)
+                        # print("row: "+ str(row) + " pixel: "+ str(pixel))
+            array[row - 2].pop()
+            if (row <= length):
+                array.append([[]]) #add another row
+            # else:
+            #     array.pop()
+        row += 1
+    return array
 
+def concat_pic(pic):
+    string = ""
+    # print(len(pic))
+    # print(len(pic[0]))
+    for row in pic:
+        for pixel in row:
+            string += str(pixel[0]) + " "
+            string += str(pixel[1]) + " "
+            string += str(pixel[2]) + " "
+        string += "\n"
+    # print(string)
+    return string
 
+def fill(x, y, new_color, file_name, screen):
+    # print(color)
+    pic = picarray(file_name)
+    # print(pic[0][0])
+    # print(screen[0][0])
+    # print(pic)
+    # print(screen)
+    checked = [[]]
+    old_color = pic[x][y]
+    # old_color = screen[y][x]
+    print(new_color)
+    print(old_color)
+    f = open(file_name, 'r')
+    f.readline()
+    line = f.readline()
+    f.close()
+    line = line.split(" ")
+    length = int(line[0])
+    width = int(line[1])
+    # print(length)
+    # print(width)
+    stack = [(x, y)]
+    # checked = []
+    while (len(stack) > 0):
+        # print(stack)
+        # set(stack)
+        x, y = stack.pop()
+        # checked.append((x, y))
+        # print("x: "+ str(x) + " y: " + str(y))
+        if (y >= 0 and y < length and x >= 0 and x < length):
+            # print(pic[x][y])
+            if (pic[x][y] == old_color):
+            # if (screen[y][x] == old_color):
+                # continue
+                pic[x][y] = new_color
+                # plot(screen, new_color, x, y)
+                # print("Changed color at (" + str(x) + ", " + str(y) + ")" )
+                if (x + 1 < width):
+                # if (x + 1 < length and not in_list((x + 1, y), checked)):
+                    stack.append( (x + 1, y) )  # right
+                    # checked.append( (x + 1, y))
+                    # set(checked)
+                if (x - 1 >= 0):
+                # if (x - 1 >= 0 and not in_list((x - 1, y), checked)):
+                    stack.append( (x - 1, y) )  # left
+                    # checked.append( (x - 1, y))
+                    # set(checked)
+                if (y + 1 < length):
+                # if (y + 1 < length and not in_list((x, y + 1), checked)):
+                    stack.append( (x, y + 1) )  # down
+                    # checked.append( (x, y + 1))
+                    # set(checked)
+                if (y - 1 >= 0):
+                # if (y - 1 >= 0 and not in_list((x, y - 1), checked)):
+                    stack.append( (x, y - 1) )  # up
+                    # checked.append( (x, y - 1))
+                    # set(checked)
+    # fillhelper(y, x, pic[x][y], color, pic, checked)
+    text = concat_pic(pic)
+    print(text)
+    output = "P3 \n" + str(length) + " " + str(width) + " 255 \n" + text
+    # print(output)
+    # print(file_name)
+    with open(os.path.join(Documents_dir, file_name),'w') as savefile:
+        savefile.write(output)
+    # fd = open(file_name, 'w')
+    # fd.write(output)
+    # fd.close()
+    # print(screen)
+#
+# def fillhelper(col, row, old_color, new_color, pic, checked):
+#     print("col: "+ str(col)+ "row: "+str(row))
+#
+#     if (col >= 0 and col <= 499 and row >= 0 and row <= 499 and not find_in_list([col, row], checked)):
+#         if (pic[col][row] == old_color):
+#             pic[col][row] = new_color
+#             checked.append([col, row])
+#             fillhelper(col + 1, row, old_color, new_color, pic, checked)
+#             fillhelper(col - 1, row, old_color, new_color, pic, checked)
+#             fillhelper(col, row + 1, old_color, new_color, pic, checked)
+#             fillhelper(col, row - 1, old_color, new_color, pic, checked)
+#     return pic
 
+def in_list(element, list):
+    for el in list:
+        if element == el:
+            return True
+    return False
 def draw_line( x0, y0, x1, y1, screen, color ):
 
     #swap points if going right -> left
